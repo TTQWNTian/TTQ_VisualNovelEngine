@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            background: #5b659c;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        h1 {
+            font-size: 60px;
+            margin-top: 70px;
+        }
+        
+        button {
+            background: rgba(255, 255, 255, 0.353);
+            color: #ffffff;
+            border: 0;
+            height: 50px;
+            width: 180px;
+            border-radius: 3vh;
+            font-size: 30px;
+            margin: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>开始界面</h1>
+    <p>这只是如何设置开始界面的演示，样式用户完全自定义。</p>
+    <button onclick="开始游戏()">开始游戏</button>
+    <script>
+        function 开始游戏() {
+            alert('读取存档进入游戏之后按左上角读取界面读取');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>
