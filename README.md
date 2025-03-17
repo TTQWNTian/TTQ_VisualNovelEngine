@@ -9,7 +9,6 @@ This project is licensed under the Creative Commons Attribution-NonCommercial (C
 ## 许可证
 本项目根据知识共享署名-非商业性（CC BY-NC）许可证授权，您可以自由修改和共享代码，但您必须保留原作者的署名，并且不得将其用于商业目的。
 
-/*
- * Copyright (c) [2025] [Tian]
- * All rights reserved.
- */
+
+* Copyright (c) [2025] [Tian]
+* All rights reserved.
