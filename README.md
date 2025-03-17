@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) [2025] [Tian]
+ * All rights reserved.
+ */
 # TTQ视觉小说引擎
 # 当前版本：1.0.0
 # 甜甜圈万能工作室出品
