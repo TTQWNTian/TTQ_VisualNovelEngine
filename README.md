@@ -2,7 +2,7 @@
 ### 当前版本：1.0.0
 ### 甜甜圈万能工作室出品
 ### 作者：Tian <t17832810228@qq.com>
-
+---
 ## License
 This project is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) License. You are free to modify and share the code, but you must retain the original author's attribution and may not use it for commercial purposes.
 
