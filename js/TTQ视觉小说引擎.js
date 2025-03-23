@@ -1,5 +1,5 @@
 // TTQ视觉小说引擎.js
-// 版本: 1.0.0
+// 版本: 1.0.1
 // 开发者: Tian
 'use strict';
 
@@ -18,7 +18,8 @@ const 初始状态 = {
   左立绘: { 显示: false, 路径: "" },
   中立绘: { 显示: false, 路径: "" },
   右立绘: { 显示: false, 路径: "" },
-  音乐: null
+  音乐: null,
+  用户变量: {}
 };
 
 let 当前状态 = JSON.parse(JSON.stringify(初始状态));
@@ -33,7 +34,7 @@ function 切换章节(新章节名称, 起始索引 = 0) {
     播放器.src = '';
   }
 
-  // 重置状态
+  // 深度重置状态
   当前状态 = {
     ...初始状态,
     当前章节: 新章节名称,
@@ -109,7 +110,7 @@ function 更新场景(节点) {
   }
 
   // 对话框系统
-const 容器 = document.getElementById('对话框容器');
+  const 容器 = document.getElementById('对话框容器');
   if (容器) {
     const 有对话内容 = 节点.角色 || 节点.内容;
     const 有选项 = 节点.选项?.length > 0;
@@ -120,24 +121,60 @@ const 容器 = document.getElementById('对话框容器');
 
     if (有对话内容 || 有选项) {
       容器.style.display = 'block';
-      
-      // 更新对话内容
+
+      // 角色字段处理
       const 角色元素 = 容器.querySelector('.角色');
+      let 处理后的角色 = 节点.角色 || '';
+
+      // 变量解析
+      处理后的角色 = 处理后的角色.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+        const 变量路径 = 变量名.trim().split('.');
+        let 值 = 当前状态.用户变量;
+        try {
+          变量路径.forEach(段 => {
+            值 = 值[段];
+          });
+          return 值 || '无名';
+        } catch {
+          return '无效变量';
+        }
+      });
+
+      角色元素.textContent = 处理后的角色;
+      角色元素.style.display = 处理后的角色 ? 'block' : 'none';
+
+      // 内容字段处理
       const 内容元素 = 容器.querySelector('.内容');
-      角色元素.textContent = 节点.角色 || '';
-      内容元素.textContent = 节点.内容 || '';
-      角色元素.style.display = 节点.角色 ? 'block' : 'none';
+      let 处理后的内容 = 节点.内容 || '';
+
+      // 变量解析
+      处理后的内容 = 处理后的内容.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+        const 变量路径 = 变量名.trim().split('.');
+        let 值 = 当前状态.用户变量;
+        try {
+          变量路径.forEach(段 => {
+            值 = 值[段];
+          });
+          return 值 || '未知';
+        } catch {
+          return '无效变量';
+        }
+      });
+
+      内容元素.innerHTML = 处理后的内容
+        .replace(/\[b\](.*?)\[\/b\]/g, '<strong>$1</strong>')
+        .replace(/\[i\](.*?)\[\/i\]/g, '<em>$1</em>');
 
       // 处理选项
       const 选项容器 = 容器.querySelector('.选项容器');
       选项容器.innerHTML = '';
-      
+
       if (有选项) {
         节点.选项.forEach(选项 => {
           const 选项按钮 = document.createElement('div');
           选项按钮.className = '选项按钮';
           选项按钮.textContent = 选项.文本 || '选项';
-          
+
           选项按钮.addEventListener('click', function(e) {
             e.stopPropagation();
             选项容器.querySelectorAll('.选项按钮').forEach(btn => {
@@ -145,7 +182,7 @@ const 容器 = document.getElementById('对话框容器');
             });
             处理选项点击(选项);
           });
-          
+
           选项容器.appendChild(选项按钮);
         });
         document.removeEventListener('click', 处理全局点击);
@@ -168,8 +205,92 @@ const 容器 = document.getElementById('对话框容器');
       }
     }
   }
-}
 
+  // 输入系统
+  if (节点.输入) {
+    document.removeEventListener('click', 处理全局点击);
+
+    const 输入容器 = document.createElement('div');
+    输入容器.className = '输入容器';
+
+    // 提示文字
+    if (节点.输入.提示文字) {
+      const 提示元素 = document.createElement('div');
+      提示元素.className = '输入提示文字';
+      提示元素.textContent = 节点.输入.提示文字;
+      输入容器.appendChild(提示元素);
+    }
+
+    // 输入框
+    const 输入框 = document.createElement('input');
+    输入框.className = '输入框';
+    输入框.placeholder = 节点.输入.占位符 || '请输入...';
+    输入框.type = 节点.输入.类型 || 'text';
+    输入框.maxLength = 节点.输入.最大长度 || 20;
+
+    // 确认按钮
+    const 确认按钮 = document.createElement('div');
+    确认按钮.className = '输入确认按钮';
+    确认按钮.textContent = 节点.输入.按钮文字 || '确认';
+
+    // 事件处理
+    const 处理确认 = () => {
+      const 输入值 = 输入框.value.trim();
+
+      // 验证必填
+      if (节点.输入.必填 && !输入值) {
+        输入框.placeholder = "请输入内容！";
+        输入框.style.borderColor = "#ff4444";
+        return;
+      }
+
+      // 存储变量（支持多级变量）
+      if (节点.输入.变量名) {
+        const 变量路径 = 节点.输入.变量名.split('.');
+        let 当前对象 = 当前状态.用户变量;
+
+        // 构建多级对象结构
+        变量路径.slice(0, -1).forEach(段 => {
+          if (!当前对象[段]) 当前对象[段] = {};
+          当前对象 = 当前对象[段];
+        });
+
+        // 设置最终值
+        当前对象[变量路径[变量路径.length - 1]] = 输入值;
+      }
+
+      // 移除输入组件
+      输入容器.remove();
+
+      // 处理跳转
+      if (typeof 节点.输入.目标 === 'number') {
+        当前状态.当前索引 = 节点.输入.目标;
+      } else {
+        当前状态.当前索引++;
+      }
+
+      // 恢复点击事件
+      document.addEventListener('click', 处理全局点击);
+      继续剧情();
+    };
+
+    确认按钮.addEventListener('click', function(e) {
+      e.stopPropagation(); // 阻止冒泡
+      处理确认();
+    });
+
+    输入框.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.stopPropagation(); // 确保回车事件不会触发其他行为
+        处理确认();
+      }
+    });
+
+    输入容器.appendChild(输入框);
+    输入容器.appendChild(确认按钮);
+    容器.querySelector('.选项容器').appendChild(输入容器);
+  }
+}
 
 // ======================
 // 选项处理系统
@@ -180,9 +301,9 @@ function 处理选项点击(选项) {
     return 选项.动作();
   }
 
-  // 处理存档等
+  // 处理特殊指令
   if (typeof 选项.目标 === 'string') {
-    switch(选项.目标) {
+    switch (选项.目标) {
       case '打开存档界面':
         return 打开存档界面();
       case '关闭存档界面':
@@ -192,7 +313,7 @@ function 处理选项点击(选项) {
     }
   }
 
-  // 处理跳转等
+  // 处理章节跳转
   if (选项.跳转) {
     切换章节(选项.跳转.章节, 选项.跳转.索引 || 0);
   } else if (typeof 选项.目标 === 'number') {
@@ -207,7 +328,7 @@ function 处理选项点击(选项) {
 function 继续剧情() {
   const 当前章节数据 = 章节库[当前状态.当前章节];
   if (!当前章节数据) return;
-  
+
   if (当前状态.当前索引 < 当前章节数据.length) {
     更新场景(当前章节数据[当前状态.当前索引]);
   } else {
@@ -232,13 +353,11 @@ function 生成存档快照() {
       中: 当前状态.中立绘 || { 显示: false, 路径: "" },
       右: 当前状态.右立绘 || { 显示: false, 路径: "" }
     },
-    音乐: 当前状态.音乐
+    音乐: 当前状态.音乐,
+    用户变量: JSON.parse(JSON.stringify(当前状态.用户变量))
   };
 }
 
-// ======================
-// 存档系统
-// ======================
 function 保存存档(存档位) {
   if (存档位 < 1 || 存档位 > 最大存档位) return;
 
@@ -246,7 +365,7 @@ function 保存存档(存档位) {
   const 提示 = document.createElement('div');
   提示.className = '存档提示';
   提示.textContent = `✓ 已保存至存档位 ${存档位}`;
-  
+
   // 添加到界面
   document.body.appendChild(提示);
 
@@ -265,11 +384,11 @@ function 保存存档(存档位) {
 function 更新存档显示(存档位) {
   const 存档项 = document.querySelector(`.存档项[data-slot="${存档位}"]`);
   if (!存档项) return;
-  
+
   const 数据 = localStorage.getItem(`手动存档_${存档位}`);
-  存档项.innerHTML = 数据 
-    ? `<span>${JSON.parse(数据).时间}</span><button class="加载按钮">加载</button>`
-    : `<span>空存档位${存档位}</span>`;
+  存档项.innerHTML = 数据 ?
+    `<span>${JSON.parse(数据).时间}</span><button class="加载按钮">加载</button>` :
+    `<span>空存档位${存档位}</span>`;
 
   const 加载按钮 = 存档项.querySelector('.加载按钮');
   if (加载按钮) {
@@ -286,7 +405,7 @@ function 加载存档(存档位) {
 
   try {
     const 存档 = JSON.parse(数据);
-    
+
     // 恢复基本状态
     切换章节(存档.章节, 存档.索引);
     document.body.style.background = 存档.背景;
@@ -295,7 +414,7 @@ function 加载存档(存档位) {
     ['左立绘', '中立绘', '右立绘'].forEach(位置 => {
       const 元素 = document.getElementById(位置);
       const 存档数据 = 存档.立绘[位置] || { 显示: false, 路径: "" };
-      
+
       if (存档数据.路径) {
         元素.src = 存档数据.路径;
         元素.style.opacity = 存档数据.显示 ? 1 : 0;
@@ -313,6 +432,9 @@ function 加载存档(存档位) {
       播放器.play();
     }
 
+    // 恢复用户变量
+    当前状态.用户变量 = 存档.用户变量 || {};
+
     关闭存档界面();
   } catch (错误) {
     console.error('存档加载失败:', 错误);
@@ -324,10 +446,10 @@ function 加载存档(存档位) {
 // ======================
 function 打开存档界面(e) {
   e?.stopPropagation();
-  
+
   const 存档界面 = document.getElementById('存档界面');
   存档界面.classList.remove('隐藏');
-  
+
   for (let i = 1; i <= 最大存档位; i++) {
     更新存档显示(i);
   }
@@ -377,6 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div style="padding:20px;color:red">
         <h1>⚠️ 初始化失败</h1>
         <p>${错误.message}</p>
+        <p>请检查 js/章节/序章.js 是否存在并正确导出数据</p>
       </div>
     `;
   }
