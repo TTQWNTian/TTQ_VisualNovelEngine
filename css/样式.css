@@ -1,8 +1,7 @@
-/* TTQ视觉小说引擎1.0.0 */
+/* TTQ视觉小说引擎1.0.1 */
 /* css/样式.css */
-
-
 /* 基础样式 */
+
 * {
     -webkit-tap-highlight-color: transparent;
     outline: none;
@@ -79,6 +78,7 @@ body {
 
 
 /* 立绘样式 */
+
 .立绘 {
     position: fixed;
     bottom: 0;
@@ -111,6 +111,7 @@ body {
 
 
 /* 存档界面 */
+
 #存档界面 {
     position: fixed;
     top: 0;
@@ -157,25 +158,70 @@ body {
     border: none;
     color: white;
 }
+
+
 /* 存档提示样式 */
+
 .存档提示 {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  color: #4CAF50;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 14px;
-  backdrop-filter: blur(5px);
-  animation: 提示浮现 0.3s ease;
-  opacity: 1;
-  transition: opacity 0.3s;
-  z-index: 999;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #4CAF50;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    backdrop-filter: blur(5px);
+    animation: 提示浮现 0.3s ease;
+    opacity: 1;
+    transition: opacity 0.3s;
+    z-index: 999;
 }
 
+
+/* 输入组件样式 */
+
+.输入容器 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.输入框 {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #fff;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    width: 100%;
+}
+
+.输入确认按钮 {
+    align-self: flex-end;
+    background: rgba(255, 153, 153, 0.5);
+    border: 1px solid #ff9999;
+    color: #ff9999;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.输入确认按钮:active {
+    background: rgba(255, 153, 153, 1);
+}
+
+.输入提示文字 {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+
 /* 动画关键帧 */
+
 @keyframes 淡入动画 {
     from {
         opacity: 0;
@@ -199,12 +245,24 @@ body {
 }
 
 @keyframes 保存闪烁 {
-  0% { background: rgba(255,255,255,0.1) }
-  50% { background: rgba(76,175,80,0.3) }
-  100% { background: rgba(255,255,255,0.1) }
+    0% {
+        background: rgba(255, 255, 255, 0.1)
+    }
+    50% {
+        background: rgba(76, 175, 80, 0.3)
+    }
+    100% {
+        background: rgba(255, 255, 255, 0.1)
+    }
 }
 
 @keyframes 提示浮现 {
-  from { transform: translate(-50%, -10px); opacity: 0; }
-  to { transform: translate(-50%, 0); opacity: 1; }
+    from {
+        transform: translate(-50%, -10px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }
