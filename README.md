@@ -1,28 +1,28 @@
 # TTQ视觉小说引擎
+## 当前版本：1.0.0
+## 甜甜圈万能工作室出品
+## 作者：Tian <t17832810228@qq.com>
 
----
 
-> **当前版本：1.0.1**
-> 
-> **甜甜圈万能工作室出品**
-> 
-> **作者：Tian**
-> 
-> **邮箱：<t17832810228@qq.com>**
+# 许可证
 
----
+本项目采用 [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) 许可证。
 
-### License
-This project is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) License. You are free to modify and share the code, but you must retain the original author's attribution and may not use it for commercial purposes.
+## 许可条款
 
-### 许可证
-本项目根据知识共享署名-非商业性（CC BY-NC）许可证授权，您可以自由修改和共享代码，但您必须保留原作者的署名，并且不得将其用于商业目的。
+- **允许商业用途**：您可以自由使用、复制、分发和修改本项目，包括用于商业目的。
+- **署名要求**：您必须给予适当的署名，提供指向许可证的链接，并说明是否对原始作品进行了修改。
+- **无额外限制**：您不得对他人使用本作品施加法律或技术限制。
 
-* Copyright (c) [2025] [Tian]
-* All rights reserved.
+## 署名方式
 
----
+如果您使用本项目开发游戏或其他作品，请在以下位置标明原作者：
 
-### 使用文档
+- 在游戏的“感谢名单”或“更多”部分中，明确标明本项目原作者的姓名或名称。
+- 在游戏的宣传材料（如官方网站、社交媒体等）中，提供指向本项目的链接。
 
-<https://bgithub.xyz/TTQWNTian/TTQ_Visual-Novel-Engine-Description-Document>
+示例署名：
+
+本作品基于 [TTQ视觉小说引擎] 开发，原作者为 [Tian]，采用 CC BY 4.0 许可证。
+
+完整的许可证文本请参阅 [LICENSE.md](LICENSE.md)。
