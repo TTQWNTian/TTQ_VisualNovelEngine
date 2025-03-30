@@ -1,11 +1,10 @@
 # TTQ视觉小说引擎
 
 > 当前版本：1.0.1
-
 > 甜甜圈万能工作室出品
-
 > 作者：Tian <t17832810228@qq.com>
 
+---
 
 # 许可证
 
@@ -31,3 +30,9 @@
 ```
 
 完整的许可证文本请参阅 [LICENSE.md](LICENSE.md)。
+
+---
+
+# 使用文档
+
+链接：[TTQ_Visual-Novel-Engine-Description-Document](https://github.com/TTQWNTian/TTQ_Visual-Novel-Engine-Description-Document)
