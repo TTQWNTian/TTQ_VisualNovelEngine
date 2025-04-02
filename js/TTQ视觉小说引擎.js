@@ -11,7 +11,7 @@ const 章节库 = {
 };
 
 const 初始状态 = {
-  当前章节: "序章",
+  当前章节: "",
   当前索引: 0,
   背景: "#222",
   左立绘: { 显示: false, 路径: "" },
@@ -507,14 +507,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (章节库.序章?.length) {
       切换章节('序章', 0);
     } else {
-      throw new Error("缺少序章数据");
+      throw new Error("缺少开始章节数据");
     }
   } catch (错误) {
     document.body.innerHTML = `
       <div style="padding:20px;color:red">
         <h1>⚠️ 初始化失败</h1>
         <p>${错误.message}</p>
-        <p>请检查 js/章节/序章.js 是否存在并正确导出数据</p>
       </div>
     `;
   }
