@@ -167,53 +167,53 @@ function 更新场景(节点) {
   });
 
   // 音乐系统
-const 音乐播放器 = document.getElementById('背景音乐');
-if (节点.hasOwnProperty('音乐')) {
-  let 音乐路径 = 节点.音乐;
+  const 音乐播放器 = document.getElementById('背景音乐');
+  if (节点.hasOwnProperty('音乐')) {
+    let 音乐路径 = 节点.音乐;
 
-  // 变量解析逻辑
-  if (typeof 音乐路径 === 'string') {
-    音乐路径 = 音乐路径.replace(/{([^}]+)}/g, (匹配, 变量名) => {
-      const 变量路径 = 变量名.trim().split('.');
-      let 值 = 当前状态.用户变量;
-      try {
-        变量路径.forEach(段 => {
-          值 = 值?.[段]; // 安全访问嵌套属性
-        });
-        return 值 || '';
-      } catch (错误) {
-        console.error(`音乐变量解析失败: ${变量名}`, 错误);
-        return '[无效路径]';
-      }
-    });
-  }
+    // 变量解析逻辑
+    if (typeof 音乐路径 === 'string') {
+      音乐路径 = 音乐路径.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+        const 变量路径 = 变量名.trim().split('.');
+        let 值 = 当前状态.用户变量;
+        try {
+          变量路径.forEach(段 => {
+            值 = 值?.[段]; // 安全访问嵌套属性
+          });
+          return 值 || '';
+        } catch (错误) {
+          console.error(`音乐变量解析失败: ${变量名}`, 错误);
+          return '[无效路径]';
+        }
+      });
+    }
 
-// 音乐播放逻辑
-if (音乐路径) {
-  if (音乐播放器.src !== 音乐路径) {
-    // 添加淡出效果
-    const 淡出开始时间 = Date.now();
-    const 淡出间隔 = setInterval(() => {
-      const 进度 = (Date.now() - 淡出开始时间) / 当前状态.音乐淡出时间;
-      if (进度 >= 1) {
-        音乐播放器.pause();
-        音乐播放器.src = 音乐路径;
-        音乐播放器.volume = 1;
-        音乐播放器.play();
-        clearInterval(淡出间隔);
-      } else {
-        音乐播放器.volume = 1 - 进度;
+    // 音乐播放逻辑
+    if (音乐路径) {
+      if (音乐播放器.src !== 音乐路径) {
+        // 添加淡出效果
+        const 淡出开始时间 = Date.now();
+        const 淡出间隔 = setInterval(() => {
+          const 进度 = (Date.now() - 淡出开始时间) / 当前状态.音乐淡出时间;
+          if (进度 >= 1) {
+            音乐播放器.pause();
+            音乐播放器.src = 音乐路径;
+            音乐播放器.volume = 1;
+            音乐播放器.play();
+            clearInterval(淡出间隔);
+          } else {
+            音乐播放器.volume = 1 - 进度;
+          }
+        }, 50);
       }
-    }, 50);
+      当前状态.音乐 = 音乐路径;
+    } else {
+      音乐播放器.pause();
+      音乐播放器.currentTime = 0;
+      音乐播放器.removeAttribute('src');
+      当前状态.音乐 = null;
+    }
   }
-    当前状态.音乐 = 音乐路径;
-  } else {
-    音乐播放器.pause();
-    音乐播放器.currentTime = 0;
-    音乐播放器.removeAttribute('src');
-    当前状态.音乐 = null;
-  }
-}
 
   // 对话框系统
   const 容器 = document.getElementById('对话框容器');
