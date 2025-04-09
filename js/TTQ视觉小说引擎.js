@@ -1,5 +1,5 @@
 // TTQ视觉小说引擎.js
-// 版本: 1.0.3
+// 版本: 1.0.4
 // 开发者: Tian
 // ⚠️对js不熟的不要动这个文件
 'use strict';
@@ -8,7 +8,9 @@
 // 全局配置
 // ======================
 const 章节库 = {
-  "序章": typeof 序章数据 !== 'undefined' ? 序章数据 : []
+  "序章": typeof 序章数据 !== 'undefined' ? 序章数据 : [],
+  "第一章": typeof 第一章数据 !== 'undefined' ? 第一章数据 : []
+
 };
 
 const 初始状态 = {
@@ -215,6 +217,17 @@ function 更新场景(节点) {
     }
   }
 
+  if (节点.条件) {
+    const 条件结果 = 解析条件表达式(节点.条件.表达式);
+    if (条件结果) {
+      当前状态.当前索引 = 节点.条件.真目标;
+      继续剧情();
+      return; // 中断当前节点后续处理
+    } else {
+      当前状态.当前索引 = 节点.条件.假目标 || (当前状态.当前索引 + 1);
+    }
+  }
+
   // 对话框系统
   const 容器 = document.getElementById('对话框容器');
   if (容器) {
@@ -395,6 +408,24 @@ function 更新场景(节点) {
     输入容器.appendChild(输入框);
     输入容器.appendChild(确认按钮);
     容器.querySelector('.选项容器').appendChild(输入容器);
+  }
+}
+
+// ======================
+// 条件解析函数
+// ======================
+function 解析条件表达式(表达式) {
+  try {
+    return new Function('vars', `
+      try {
+        return ${表达式};
+      } catch {
+        return false;
+      }
+    `)(当前状态.用户变量);
+  } catch (e) {
+    console.error('条件解析错误:', e);
+    return false;
   }
 }
 
