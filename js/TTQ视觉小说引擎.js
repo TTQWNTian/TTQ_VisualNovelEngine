@@ -1,5 +1,5 @@
 // TTQ视觉小说引擎.js
-// 版本: 1.0.3-测试版
+// 版本: 1.0.3
 // 开发者: Tian
 // ⚠️对js不熟的不要动这个文件
 'use strict';
@@ -19,7 +19,8 @@ const 初始状态 = {
   中立绘: { 显示: false, 路径: "" },
   右立绘: { 显示: false, 路径: "" },
   音乐: null,
-  用户变量: {}
+  用户变量: {},
+  音乐淡出时间: 1000 // 毫秒
 };
 
 let 当前状态 = JSON.parse(JSON.stringify(初始状态));
@@ -77,7 +78,7 @@ function 更新场景(节点) {
       });
 
       const 最后字段 = 路径数组[路径数组.length - 1];
-      
+
       // 处理运算符（如 +=、-= 等）
       if (typeof 值 === 'string') {
         const 操作符匹配 = 值.match(/^(\+|\-|\*|\/)=(-?\d+\.?\d*)/);
@@ -85,25 +86,48 @@ function 更新场景(节点) {
           const [_, 操作符, 数字] = 操作符匹配;
           const 当前值 = parseFloat(当前对象[最后字段] || 0);
           const 数值 = parseFloat(数字);
-          
-          switch(操作符) {
-            case '+': 当前对象[最后字段] = 当前值 + 数值; break;
-            case '-': 当前对象[最后字段] = 当前值 - 数值; break;
-            case '*': 当前对象[最后字段] = 当前值 * 数值; break;
-            case '/': 当前对象[最后字段] = 当前值 / 数值; break;
+
+          switch (操作符) {
+            case '+':
+              当前对象[最后字段] = 当前值 + 数值;
+              break;
+            case '-':
+              当前对象[最后字段] = 当前值 - 数值;
+              break;
+            case '*':
+              当前对象[最后字段] = 当前值 * 数值;
+              break;
+            case '/':
+              当前对象[最后字段] = 当前值 / 数值;
+              break;
           }
           return;
         }
       }
-      
+
       // 直接赋值
       当前对象[最后字段] = 值;
     });
   }
 
   // 背景更新
+
   if (节点.背景) {
-    const 背景图 = `url('${节点.背景}') center/cover`;
+    // 添加变量解析逻辑
+    let 背景路径 = 节点.背景;
+    背景路径 = 背景路径.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+      const 变量路径 = 变量名.trim().split('.');
+      let 值 = 当前状态.用户变量;
+      try {
+        变量路径.forEach(段 => 值 = 值[段]);
+        return 值 || '';
+      } catch {
+        console.error(`背景变量解析失败: ${变量名}`);
+        return '';
+      }
+    });
+
+    const 背景图 = 背景路径 ? `url('${背景路径}') center/cover` : 初始状态.背景;
     document.body.style.background = 背景图;
     当前状态.背景 = 背景图;
   }
@@ -116,8 +140,22 @@ function 更新场景(节点) {
     const 新设置 = 节点.立绘?.[位置] || {};
     const 当前显示状态 = 当前状态[位置]?.显示 ?? false;
 
+
     if (新设置.路径) {
-      元素.src = 新设置.路径;
+      // 添加变量解析逻辑
+      let 解析路径 = 新设置.路径;
+      解析路径 = 解析路径.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+        const 变量路径 = 变量名.trim().split('.');
+        let 值 = 当前状态.用户变量;
+        try {
+          变量路径.forEach(段 => 值 = 值[段]);
+          return 值 || '';
+        } catch {
+          return '无效路径';
+        }
+      });
+
+      元素.src = 解析路径;
       元素.style.opacity = 1;
       当前状态[位置] = { 显示: true, 路径: 新设置.路径 };
     } else if (新设置.隐藏) {
@@ -129,22 +167,53 @@ function 更新场景(节点) {
   });
 
   // 音乐系统
-  const 音乐播放器 = document.getElementById('背景音乐');
-  if (节点.hasOwnProperty('音乐')) {
-    if (节点.音乐) {
-      if (音乐播放器.src !== 节点.音乐) {
-        音乐播放器.pause();
-        音乐播放器.src = 节点.音乐;
-        音乐播放器.play().catch(() => console.log('等待用户交互后自动播放'));
+const 音乐播放器 = document.getElementById('背景音乐');
+if (节点.hasOwnProperty('音乐')) {
+  let 音乐路径 = 节点.音乐;
+
+  // 变量解析逻辑
+  if (typeof 音乐路径 === 'string') {
+    音乐路径 = 音乐路径.replace(/{([^}]+)}/g, (匹配, 变量名) => {
+      const 变量路径 = 变量名.trim().split('.');
+      let 值 = 当前状态.用户变量;
+      try {
+        变量路径.forEach(段 => {
+          值 = 值?.[段]; // 安全访问嵌套属性
+        });
+        return 值 || '';
+      } catch (错误) {
+        console.error(`音乐变量解析失败: ${变量名}`, 错误);
+        return '[无效路径]';
       }
-      当前状态.音乐 = 节点.音乐;
-    } else {
-      音乐播放器.pause();
-      音乐播放器.currentTime = 0;
-      音乐播放器.removeAttribute('src');
-      当前状态.音乐 = null;
-    }
+    });
   }
+
+// 音乐播放逻辑
+if (音乐路径) {
+  if (音乐播放器.src !== 音乐路径) {
+    // 添加淡出效果
+    const 淡出开始时间 = Date.now();
+    const 淡出间隔 = setInterval(() => {
+      const 进度 = (Date.now() - 淡出开始时间) / 当前状态.音乐淡出时间;
+      if (进度 >= 1) {
+        音乐播放器.pause();
+        音乐播放器.src = 音乐路径;
+        音乐播放器.volume = 1;
+        音乐播放器.play();
+        clearInterval(淡出间隔);
+      } else {
+        音乐播放器.volume = 1 - 进度;
+      }
+    }, 50);
+  }
+    当前状态.音乐 = 音乐路径;
+  } else {
+    音乐播放器.pause();
+    音乐播放器.currentTime = 0;
+    音乐播放器.removeAttribute('src');
+    当前状态.音乐 = null;
+  }
+}
 
   // 对话框系统
   const 容器 = document.getElementById('对话框容器');
@@ -376,7 +445,7 @@ function 处理选项点击(选项) {
 
   // 处理跳转逻辑
   const 跳转目标 = 条件满足 ? 选项.目标 : 选项.否则目标;
-  
+
   if (typeof 跳转目标 === 'number') {
     当前状态.当前索引 = 跳转目标;
     继续剧情();
