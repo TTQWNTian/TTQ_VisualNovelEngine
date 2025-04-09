@@ -28,7 +28,7 @@
 **示例署名：**
 
 ```
-本作品基于TTQ视觉小说引擎开发，原作者为Tian，采用 CC BY 4.0 许可证。引擎开源链接：https://github.com/TTQWNTian/TTQ_Visual-Novel-Engine-Description-Document
+本作品基于TTQ视觉小说引擎开发，原作者为Tian，采用 CC BY 4.0 许可证。引擎开源链接：https://github.com/TTQWNTian/TTQ_VisualNovelEngine/
 ```
 
 完整的许可证文本请参阅 [LICENSE.md](LICENSE.md)。
@@ -37,4 +37,4 @@
 
 # 使用文档
 
-链接：[TTQ_Visual-Novel-Engine-Description-Document](https://github.com/TTQWNTian/TTQ_VisualNovelEngineDescriptionDocument)
+链接：[TTQ_Visual-Novel-Engine-Description-Document](https://github.com/TTQWNTian/TTQ_Visual-Novel-Engine-Description-Document)
