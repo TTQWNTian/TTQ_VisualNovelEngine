@@ -28,7 +28,7 @@ let 当前状态 = JSON.parse(JSON.stringify(初始状态));
 // ======================
 // 核心引擎函数
 // ======================
-function 切换章节(新章节名称, 起始索引 = 0) {
+function 切换章节(新章节名称, 起始索引 = 0, 选项 = {}) {
   const 播放器 = document.getElementById('背景音乐');
   if (当前状态.音乐) {
     播放器.pause();
