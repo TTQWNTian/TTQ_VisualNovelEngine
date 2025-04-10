@@ -39,4 +39,4 @@
 
 # 使用文档
 
-链接：[TTQ_Visual-Novel-Engine-Description-Document](https://github.com/TTQWNTian/TTQ_Visual-Novel-Engine-Description-Document)
+链接：[Dvnge_document](https://github.com/TTQWNTian/Dvnge_document)
