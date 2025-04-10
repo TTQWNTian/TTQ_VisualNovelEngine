@@ -1,8 +1,10 @@
-# TTQ视觉小说引擎
+# Dvnge
 
 > 当前版本：1.0.4-测试版
 > 
 > 甜甜圈万能工作室出品
+>
+> 基于web的视觉小说引擎
 > 
 > 作者：Tian <t17832810228@qq.com>
 
@@ -28,7 +30,7 @@
 **示例署名：**
 
 ```
-本作品基于TTQ视觉小说引擎开发，原作者为Tian，采用 CC BY 4.0 许可证。引擎开源链接：https://github.com/TTQWNTian/TTQ_VisualNovelEngine/
+本作品基于Dvnge开发，原作者为Tian，采用 CC BY 4.0 许可证。引擎开源链接：https://github.com/TTQWNTian/Dvnge
 ```
 
 完整的许可证文本请参阅 [LICENSE.md](LICENSE.md)。
