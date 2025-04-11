@@ -3,26 +3,6 @@
 [Dvnge.png](https://img.picui.cn/free/2025/04/11/67f8761df0cd7.png)
 
 > 当前版本：1.0.4-测试版
-> 
-> 甜甜圈万能工作室出品
-> 
-> Web视觉小说引擎
-> 
-> 作者：Tian <t17832810228@qq.com>
-
----
-
-# 许可证
-
-本项目采用 [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) 许可证。
-
-## 许可条款
-
-# Dvnge
-
-[Dvnge.png](https://img.picui.cn/free/2025/04/11/67f8761df0cd7.png)
-
-> 当前版本：1.0.4-测试版
 > 甜甜圈万能工作室出品
 > Web视觉小说引擎
 > 作者：Tian <t17832810228@qq.com>
